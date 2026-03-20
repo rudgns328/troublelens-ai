@@ -1,0 +1,27 @@
+# Core
+python-dotenv==1.0.0
+pydantic==2.7.0
+pydantic-settings==2.3.0
+
+# LangChain / LangGraph
+langchain==0.2.16
+langchain-openai==0.1.25
+langchain-community==0.2.16
+langgraph==0.2.14
+
+# VectorDB
+chromadb==0.5.15
+
+# Embedding
+openai==1.40.0
+
+# API
+fastapi==0.111.0
+uvicorn==0.30.1
+
+# UI
+streamlit==1.37.0
+
+# Utility
+tiktoken==0.7.0
+rich==13.7.1
