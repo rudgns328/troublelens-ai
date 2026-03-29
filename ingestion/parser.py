@@ -118,14 +118,14 @@ class ClaudeExportParser:
         if not filepath.exists():
             raise FileNotFoundError(f"파일을 찾을 수 없어요: {filepath}")
 
-        console.print(f"[bold green]📂 파싱 시작:[/] {filepath}")
+        console.print(f"[bold green] 파싱 시작:[/] {filepath}")
 
         with open(filepath, encoding="utf-8") as f:
             raw_data = json.load(f)
 
         conversations = [_parse_conversation(raw) for raw in raw_data]
 
-        console.print(f"[bold green]✅ 파싱 완료:[/] {len(conversations)}개 대화")
+        console.print(f"[bold green] 파싱 완료:[/] {len(conversations)}개 대화")
         return conversations
 
     def filter_candidates(
@@ -154,7 +154,7 @@ class ClaudeExportParser:
 
         after = len(filtered)
         console.print(
-            f"[yellow]🔍 1차 필터:[/] {before}개 → {after}개 "
+            f"[yellow] 1차 필터:[/] {before}개 → {after}개 "
             f"([red]{before - after}개 제거[/])"
         )
         return filtered
@@ -170,6 +170,6 @@ if __name__ == "__main__":
     # 1차 필터
     candidates = parser.filter_candidates(conversations)
 
-    print(f"\n✅ LLM 판별 대상: {len(candidates)}개")
+    print(f"\n LLM 판별 대상: {len(candidates)}개")
     for c in candidates:
         print(f"  [{c.message_count:3}턴] {c.name}")
