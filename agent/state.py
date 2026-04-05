@@ -22,3 +22,20 @@ class TroubleshootingState(TypedDict):
     # ── Node 4: 중복 감지 ──────────────────────
     is_duplicate: bool  # 중복 여부
     duplicate_of: Optional[str]  # 중복이면 원본 chunk_id
+
+
+def make_initial_state(chunk_id: str, chunk_text: str) -> TroubleshootingState:
+    """ChromaDB 청크로부터 초기 State를 만든다."""
+    return {
+        "chunk_id": chunk_id,
+        "chunk_text": chunk_text,
+        "is_troubleshooting": False,
+        "problem": None,
+        "cause": None,
+        "solution": None,
+        "code_snippet": None,
+        "tags": [],
+        "category": None,
+        "is_duplicate": False,
+        "duplicate_of": None,
+    }
