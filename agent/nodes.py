@@ -3,6 +3,9 @@ import logging
 from langchain_openai import ChatOpenAI
 from langchain.schema import HumanMessage, SystemMessage
 from agent.state import TroubleshootingState
+from dotenv import load_dotenv
+
+load_dotenv()
 
 logger = logging.getLogger(__name__)
 
