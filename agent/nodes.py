@@ -16,13 +16,13 @@ llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
 # ── JSON 파싱 유틸 ────────────────────────────────────────────
 def parse_json_response(text: str, node: str) -> dict | None:
     """
-    LLM 응답에서 JSON 안전하게 추출 — v2
+    LLM 응답에서 JSON 안전하게 추출
 
     처리 순서:
       1. 마크다운 펜스 제거 (```json ... ```)
       2. 순수 JSON 파싱 시도
       3. { } 블록 추출 후 재시도
-      4. 역슬래시 수리 후 재시도  ← 이번에 추가
+      4. 역슬래시 수리 후 재시도
       5. 실패 시 None 반환
     """
     text = text.strip()
