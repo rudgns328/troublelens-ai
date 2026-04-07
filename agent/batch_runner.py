@@ -1,6 +1,5 @@
 """
 배치 파이프라인 — ChromaDB 전체 청크 → LangGraph 분석 → 결과 저장
-agent/batch_runner.py
 """
 
 import json
@@ -125,7 +124,7 @@ def run_batch(grouped: dict[str, dict]) -> list[dict]:
             continue
 
         # 트러블슈팅이 아닌 대화는 결과에서 제외
-        if not result["is_troubleshooting"]:
+        if not result["is_troubleshooting"] or not result.get("problem"):
             skipped += 1
             continue
 
@@ -142,6 +141,7 @@ def run_batch(grouped: dict[str, dict]) -> list[dict]:
                 "category": result["category"],
                 "is_duplicate": result["is_duplicate"],
                 "analyzed_at": datetime.now().isoformat(),
+                "chunk_text": full_text,
             }
         )
 

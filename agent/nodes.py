@@ -97,7 +97,7 @@ def extract_information(state: TroubleshootingState) -> dict:
   "problem": "문제 상황 한 문장 요약",
   "cause": "원인 한 문장 요약",
   "solution": "해결책 한 문장 요약",
-  "code_snippet": "핵심 코드 (없으면 null)"
+  "code_snippet": "핵심 코드 한 줄 또는 명령어 문자열. 코드가 여러 줄이면 줄바꿈(\\n)으로 연결한 하나의 문자열로. 없으면 null"
 }"""
         ),
         HumanMessage(content=f"다음 트러블슈팅을 분석하세요:\n\n{state['chunk_text']}"),
