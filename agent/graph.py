@@ -1,3 +1,4 @@
+from functools import partial
 from langgraph.graph import StateGraph, END
 from agent.state import TroubleshootingState
 from agent.nodes import (
@@ -6,6 +7,7 @@ from agent.nodes import (
     tag_and_classify,
     detect_duplicate,
 )
+from llm import OpenAILLM, OllamaLLM
 
 
 def route_after_detection(state: TroubleshootingState) -> str:
@@ -15,17 +17,23 @@ def route_after_detection(state: TroubleshootingState) -> str:
     return END
 
 
-def build_graph():
+def build_graph(llm_type: str = "openai"):
+    # LLM 선택
+    if llm_type == "openai":
+        llm = OpenAILLM()
+    else:
+        llm = OllamaLLM()
+
     graph = StateGraph(TroubleshootingState)
 
-    graph.add_node("detect", detect_troubleshooting)
-    graph.add_node("extract", extract_information)
-    graph.add_node("tag", tag_and_classify)
+    # partial로 llm 미리 고정
+    graph.add_node("detect", partial(detect_troubleshooting, llm=llm))
+    graph.add_node("extract", partial(extract_information, llm=llm))
+    graph.add_node("tag", partial(tag_and_classify, llm=llm))
     graph.add_node("duplicate", detect_duplicate)
 
     graph.set_entry_point("detect")
 
-    # 조건부 Edge (Node 1 이후 분기)
     graph.add_conditional_edges(
         "detect", route_after_detection, {"extract": "extract", END: END}
     )
@@ -37,5 +45,5 @@ def build_graph():
     return graph.compile()
 
 
-# 그래프 인스턴스 (다른 파일에서 import해서 쓸 수 있도록)
-troublelens_graph = build_graph()
+# 기본은 GPT
+troublelens_graph = build_graph(llm_type="openai")

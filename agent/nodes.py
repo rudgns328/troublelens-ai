@@ -1,16 +1,14 @@
 import re
 import json
 import logging
-from langchain_openai import ChatOpenAI
 from langchain.schema import HumanMessage, SystemMessage
 from agent.state import TroubleshootingState
 from dotenv import load_dotenv
+from llm import BaseLLM
 
 load_dotenv()
 
 logger = logging.getLogger(__name__)
-
-llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
 
 
 # ── JSON 파싱 유틸 ────────────────────────────────────────────
@@ -61,7 +59,7 @@ def parse_json_response(text: str, node: str) -> dict | None:
 
 
 # ── Node 1: 트러블슈팅 판별 ───────────────────────────────────
-def detect_troubleshooting(state: TroubleshootingState) -> dict:
+def detect_troubleshooting(state: TroubleshootingState, llm: BaseLLM) -> dict:
     """이 청크가 트러블슈팅 내용인지 판별한다."""
 
     messages = [
@@ -76,7 +74,7 @@ def detect_troubleshooting(state: TroubleshootingState) -> dict:
     ]
 
     response = llm.invoke(messages)
-    result = parse_json_response(response.content, node="detect")
+    result = parse_json_response(response, node="detect")
 
     if result is None:
         return {"is_troubleshooting": False}
@@ -85,7 +83,7 @@ def detect_troubleshooting(state: TroubleshootingState) -> dict:
 
 
 # ── Node 2: 정보 추출 ─────────────────────────────────────────
-def extract_information(state: TroubleshootingState) -> dict:
+def extract_information(state: TroubleshootingState, llm: BaseLLM) -> dict:
     """트러블슈팅에서 문제/원인/해결책/코드를 추출한다."""
 
     messages = [
@@ -104,7 +102,7 @@ def extract_information(state: TroubleshootingState) -> dict:
     ]
 
     response = llm.invoke(messages)
-    result = parse_json_response(response.content, node="extract")
+    result = parse_json_response(response, node="extract")
 
     if result is None:
         return {"problem": None, "cause": None, "solution": None, "code_snippet": None}
@@ -118,7 +116,7 @@ def extract_information(state: TroubleshootingState) -> dict:
 
 
 # ── Node 3: 태깅 & 분류 ──────────────────────────────────────
-def tag_and_classify(state: TroubleshootingState) -> dict:
+def tag_and_classify(state: TroubleshootingState, llm: BaseLLM) -> dict:
     """기술 스택 태그와 카테고리를 분류한다."""
 
     messages = [
@@ -144,7 +142,7 @@ tags 규칙:
     ]
 
     response = llm.invoke(messages)
-    result = parse_json_response(response.content, node="tag")
+    result = parse_json_response(response, node="tag")
 
     if result is None:
         return {"tags": [], "category": "기타"}
